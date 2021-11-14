@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+	<div id="meta">
+		<div id="name">{{ topic.author }}</div>
+		<div id="time">{{ topic.date }}</div>
+	</div>
+	<div id="body">
+		{{ topic.content|safe }}
+		<a href="/like/{{ topic.id }}">{{ topic.likesNum }} likes</a>
+	</div>
+</div>
+
+{% for reply in replies %}
+<div>
+	<div id="meta">
+		<div id="name">{{ reply.author }}</div>
+		<div id="time">{{ reply.date }}</div>
+	</div>
+	<div id="body">
+		{{ reply.content|safe }}
+		<a href="/like/reply/{{ reply.id }}/{{ topic.id }}">{{ reply.likesNum }} likes</a>		
+	</div>
+</div>
+{% endfor %}
+<div id="reply">
+	<form action="/reply/{{ topic.id }}" method="post">
+		<textarea name="body" cols="100" rows="10"></textarea>
+		<button type="submit">Reply</button>
+	</form>
+</div> 
+{% endblock %}
