@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="reply">
+
+</div>
+
+<article class="media">
+  <figure class="media-left">
+  </figure>
+  <div class="media-content">
+    <div class="content">
+      <p>
+        <strong> {{ topic.author }} </strong>
+        <br>
+            {{ topic.content|safe }}
+        <br>
+        <br>
+            {{ test_score }}
+        <br>
+
+          <small>
+              <a href="/like/{{ topic.id }}"> {{ topic.likesNum }} likes</a>
+              <a> {{ topic.date }}</a>
+          </small>
+      </p>
+    </div>
+
+{% for reply in replies %}
+
+    <article class="media">
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong> {{ reply.author }} </strong>
+            <br>
+              {{ reply.content|safe }}
+            <br>
+            <small>
+              <a href="/like/reply/{{ reply.id }}/{{ topic.id }}"> {{ reply.likesNum }} likes</a>
+              <a> {{ reply.date }}</a>
+            </small>
+          </p>
+        </div>
+      </div>
+    </article>
+
+{% endfor %}
+
+    <form action="/reply/{{ topic.id }}" method="post">
+
+        <article class="media">
+          <figure class="media-left">
+          </figure>
+          <div class="media-content">
+            <div class="field">
+              <p class="control">
+                <textarea class="textarea" name="body" placeholder="Add a comment..."></textarea>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <button class="button" type="submit"> Reply </button>
+              </p>
+            </div>
+          </div>
+        </article>
+    </form>
+
+
+{% endblock %}

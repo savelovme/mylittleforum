@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<img src="{{ url_for('static', filename='frustration_sign.jpg') }}"  width="617px">
+
+<div id="navbarMenuHeroA" class="navbar-menu">
+    <a href="/top" class="navbar-item"> Top </a>
+    <a href="/new" class="navbar-item"> Last </a>
+    <a href="/post" class="navbar-item"> New topic </a>
+</div>
+
+<table class="table" style="width: 80%">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Last Activity</th>
+            <th>Author</th>
+            <th>Replies</th>
+            <th>Views</th>
+        </tr>
+    </thead>
+	{% for topic in topics %}
+	<tr>
+		<td><a href="/topic/{{ topic.id }}"><b>{{ topic.title }}</b></a></td>
+		<td><a href="/cat/{{ topic.category }}">{{ topic.category }}</a></td>
+		<td>{{ topic.lastActivity }}</td>
+		<td>{{ topic.author }}</td>
+		<td>{{ topic.repliesNum }}</td>
+		<td>{{ topic.views }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
