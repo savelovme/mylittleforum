@@ -2,6 +2,7 @@ import json
 from flask_login import UserMixin
 from . import db
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
@@ -16,7 +17,7 @@ class Topic(db.Model):
     content = db.Column(db.Text)
     date = db.Column(db.Text)
     lastActivity = db.Column(db.Text)
-    author = db.Column(db.Text)
+    author_id = db.Column(db.Integer)
     category = db.Column(db.Text)
     private = db.Column(db.Boolean)
     likes = db.Column(db.Text)
@@ -27,11 +28,11 @@ class Topic(db.Model):
     repliesNum = db.Column(db.Integer)
     views = db.Column(db.Integer)
 
-    def __init__(self, title, content, date, author, category, frustration, private=False):
+    def __init__(self, title, content, date, author_id, category, frustration, private=False):
         self.title = title
         self.content = content
         self.date = date
-        self.author = author
+        self.author_id = author_id
         self.category = category
         self.private = private
         self.likesNum = 0
@@ -41,14 +42,14 @@ class Topic(db.Model):
         self.lastActivity = date
         self.frustration = frustration
 
-    def like(self, username):
+    def like(self, user_id):
         l = json.loads(self.likes)
-        if username in l:
-            l.remove(username)
+        if user_id in l:
+            l.remove(user_id)
             self.likesNum -= 1
             self.likes = json.dumps(l)
         else:
-            l.append(username)
+            l.append(user_id)
             self.likesNum += 1
             self.likes = json.dumps(l)
 
@@ -61,29 +62,29 @@ class Reply(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
     date = db.Column(db.Text)
-    author = db.Column(db.Text)
-    inReplyTo = db.Column(db.Integer)
+    author_id = db.Column(db.Integer)
+    topic_id = db.Column(db.Integer)
     likes = db.Column(db.Text)
     frustration = db.Column(db.Float)
 
     likesNum = db.Column(db.Integer)
 
-    def __init__(self, content, date, author, inReplyTo, frustration):
+    def __init__(self, content, date, author_id, topic_id, frustration):
         self.content = content
         self.date = date
-        self.author = author
-        self.inReplyTo = inReplyTo
+        self.author_id = author_id
+        self.topic_id = topic_id
         self.likesNum = 0
         self.likes = "[]"
         self.frustration = frustration
 
-    def like(self, username):
+    def like(self, user_id):
         l = json.loads(self.likes)
-        if username in l:
-            l.remove(username)
+        if user_id in l:
+            l.remove(user_id)
             self.likesNum -= 1
             self.likes = json.dumps(l)
         else:
-            l.append(username)
+            l.append(user_id)
             self.likesNum += 1
             self.likes = json.dumps(l)

@@ -2,12 +2,15 @@
 
 {% block content %}
 <h1 class="title">
-  Welcome, {{ name }}!
-
-
+  Привет, {{ name }}!
 </h1>
 
-<img src="{{ url_for('static', filename=avatar) }}", width="228px" align="center">
+<p>
+    <img src="{{ url_for('static', filename=avatar) }}", width="228px" align="center">
+</p>
 
+<form method="POST" action="" enctype="multipart/form-data">
+      <p><input type="file" name="file" accept=".png, .jpg"> <input type="submit" value="Сделать новым аватаром"></p>
+</form>
 
 {% endblock %}

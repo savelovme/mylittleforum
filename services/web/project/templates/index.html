@@ -27,7 +27,7 @@
 		<td><a href="/topic/{{ topic.id }}"><b>{{ topic.title }}</b></a></td>
 		<td><a href="/cat/{{ topic.category }}">{{ topic.category }}</a></td>
 		<td>{{ topic.lastActivity }}</td>
-		<td>{{ topic.author }}</td>
+		<td>{{ get_user(topic.author_id).name }}</td>
 		<td>{{ topic.repliesNum }}</td>
 		<td>{{ topic.views }}</td>
 	</tr>

@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div id="reply">
-
-</div>
-
 <article class="media">
   <figure class="media-left">
+      <p class="image is-128x128">
+          <img src="{{ url_for('static', filename=get_user(topic.author_id).avatar) }}">
+      </p>
   </figure>
   <div class="media-content">
     <div class="content">
       <p>
-        <strong> {{ topic.author }} </strong>
+        <strong> {{ get_user(topic.author_id).name }} </strong>
         <br>
             {{ topic.content|safe }}
         <br>
@@ -29,10 +28,15 @@
 {% for reply in replies %}
 
     <article class="media">
+        <figure class="media-left">
+            <p class="image is-64x64">
+                <img src="{{ url_for('static', filename=get_user(reply.author_id).avatar) }}">
+            </p>
+        </figure>
       <div class="media-content">
         <div class="content">
           <p>
-            <strong> {{ reply.author }} </strong>
+            <strong> {{ get_user(reply.author_id).name }} </strong>
             <br>
               {{ reply.content|safe }}
             <br>
