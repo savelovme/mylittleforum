@@ -11,8 +11,7 @@ main = Blueprint('main', __name__)
 
 
 def get_time():
-    return time.asctime(time.localtime(time.time()))  # Get the current time and date
-
+    return time.strftime("%d %b %Y %H:%M:%S" , time.localtime(time.time()))
 
 def get_user(id):
     return User.query.filter_by(id=id).first_or_404()
@@ -28,7 +27,15 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.name, avatar=current_user.avatar)
+    frustration_stat = dict()
+    frustration_stat["frustrated_topics"] = Topic.query.filter(Topic.author_id == current_user.id,
+                                                               Topic.frustration > 0.5).count()
+    frustration_stat["total_topics"] = Topic.query.filter(Topic.author_id == current_user.id).count()
+    frustration_stat["frustrated_replies"] = Reply.query.filter(Reply.author_id == current_user.id,
+                                                               Reply.frustration > 0.5).count()
+    frustration_stat["total_replies"] = Reply.query.filter(Reply.author_id == current_user.id).count()
+
+    return render_template('profile.html', name=current_user.name, avatar=current_user.avatar, frustration_stat=frustration_stat)
 
 
 @main.route('/profile', methods=['POST'])
@@ -44,13 +51,13 @@ def upload_file():
     return redirect("/profile")
 
 
-@main.route("/post")  # Render the 'write new topic' box
+@main.route("/post")
 @login_required
 def renderCreateTopic():
     return render_template("post.html")
 
 
-@main.route("/post/post", methods=["POST"])  # Backend of the new topic box
+@main.route("/post/post", methods=["POST"])
 def createTopic():
     topic = Topic(
         request.form["title"],
@@ -65,65 +72,64 @@ def createTopic():
     return redirect("/topic/" + str(topic.id))
 
 
-@main.route("/topic/<id>")  # Render a topic
+@main.route("/topic/<id>")
 def renderTopic(id):
     topic = Topic.query.filter_by(id=id).first_or_404()
-    topic.views += 1  # Add one view
+    topic.views += 1
     db.session.add(topic)
-    db.session.commit()  # Change the value of the view in the database
+    db.session.commit()
     return render_template(
-        "topic.html", topic=topic, replies=Reply.query.filter_by(topic_id=id).order_by(Reply.id),
-        get_user=get_user, test_score=topic.frustration
-    )  # Render the page
+        "topic.html", topic=topic, replies=Reply.query.filter_by(topic_id=id).order_by(Reply.id), get_user=get_user
+    )
 
 
-@main.route("/reply/<id>", methods=["POST"])  # Reply to a post.
+@main.route("/reply/<id>", methods=["POST"])
 @login_required
 def replyTo(id):
     topic = Topic.query.filter_by(id=id).first_or_404()
-    topic.reply(get_time())  # Reply to the topic
+    topic.reply(get_time())
     reply = Reply(
         request.form["body"], get_time(), current_user.id, id,
         frustration_model.predict_probas([request.form["body"]])[0, 0].item()
-    )  # Add the reply
+    )
     db.session.add(reply)
-    db.session.add(topic)
-    db.session.commit()  # Add everything in the database
-    return redirect("/topic/" + str(id))  # Redirect to the correct page
-
-
-@main.route("/like/<id>")  # Like a topic
-@login_required
-def likeTopic(id):
-    topic = Topic.query.filter_by(id=id).first_or_404()
-    topic.like(current_user.id)  # Call the 'like' function of the class 'Topic'
     db.session.add(topic)
     db.session.commit()
     return redirect("/topic/" + str(id))
 
 
-@main.route("/like/reply/<id>/<topic_id>")  # Like a reply
+@main.route("/like/<id>")
+@login_required
+def likeTopic(id):
+    topic = Topic.query.filter_by(id=id).first_or_404()
+    topic.like(current_user.id)
+    db.session.add(topic)
+    db.session.commit()
+    return redirect("/topic/" + str(id))
+
+
+@main.route("/like/reply/<id>/<topic_id>")
 @login_required
 def likeReply(id, topic_id):
     reply = Reply.query.filter_by(id=id).first_or_404()
-    reply.like(current_user.id)  # Call the like function of the class Reply
+    reply.like(current_user.id)
     db.session.add(reply)
     db.session.commit()
-    return redirect("/topic/" + str(topic_id))  # Return to the topic
+    return redirect("/topic/" + str(topic_id))
 
 
-@main.route("/top")  # Order the list of posts by thoses who have the biggest number of replies
+@main.route("/top")
 def topList():
     topics = Topic.query.order_by(Topic.repliesNum.desc())
     return render_template("index.html", topics=topics, get_user=get_user)
 
 
-@main.route("/new")  # Order the list like normal (redirect)
+@main.route("/new")
 def redirectIndex():
     return redirect("/")
 
 
-@main.route("/cat/<category>")  # Get the list of posts in a category
+@main.route("/cat/<category>")
 def catList(category):
     topics = Topic.query.filter_by(category=category).order_by(Topic.id.desc())
     return render_template("index.html", topics=topics, get_user=get_user)

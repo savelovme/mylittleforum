@@ -1,16 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <h1 class="title">
   Привет, {{ name }}!
 </h1>
 
-<p>
+<div class="block">
     <img src="{{ url_for('static', filename=avatar) }}", width="228px" align="center">
-</p>
+</div>
 
-<form method="POST" action="" enctype="multipart/form-data">
-      <p><input type="file" name="file" accept=".png, .jpg"> <input type="submit" value="Сделать новым аватаром"></p>
-</form>
+<div class="block">
+    <form method="POST" action="" enctype="multipart/form-data">
+
+        <input type="file" name="file" accept=".png, .jpg"> <input type="submit" value="Сделать новым аватаром">
+
+    </form>
+</div>
+
+
+ <div class="block">
+    {% if frustration_stat["total_topics"] > 0 %}
+        Из всех созданных Вами {{ frustration_stat["total_topics"] }} топиков {{ frustration_stat["frustrated_topics"] }} помечены как фрустрированные.
+     {% else %}
+        Вы пока не создавали топики. Для создания вернитесь на главную страницу.
+     {% endif %}
+     <br>
+    {% if frustration_stat["total_replies"] > 0 %}
+        А среди Ваших {{ frustration_stat["total_replies"] }} ответов {{ frustration_stat["frustrated_replies"] }} помечены как фрустрированные.
+    {% else %}
+        Вы пока не участвовали в обсуждениях. Вернитесь на главную страницу и выберите топик.
+    {% endif %}
+ </div>
 
 {% endblock %}

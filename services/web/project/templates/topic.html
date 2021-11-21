@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<h1 class="title">
+  {{ topic.title }}
+</h1>
+
 <article class="media">
   <figure class="media-left">
       <p class="image is-128x128">
@@ -13,9 +17,6 @@
         <strong> {{ get_user(topic.author_id).name }} </strong>
         <br>
             {{ topic.content|safe }}
-        <br>
-        <br>
-            {{ test_score }}
         <br>
 
           <small>
@@ -59,12 +60,12 @@
           <div class="media-content">
             <div class="field">
               <p class="control">
-                <textarea class="textarea" name="body" placeholder="Add a comment..."></textarea>
+                <textarea class="textarea" name="body" placeholder="Ваш комментарий..."></textarea>
               </p>
             </div>
             <div class="field">
               <p class="control">
-                <button class="button" type="submit"> Reply </button>
+                <button class="button" type="submit"> Ответить </button>
               </p>
             </div>
           </div>

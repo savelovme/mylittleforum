@@ -6,20 +6,20 @@
 <img src="{{ url_for('static', filename='frustration_sign.jpg') }}"  width="617px">
 
 <div id="navbarMenuHeroA" class="navbar-menu">
-    <a href="/top" class="navbar-item"> Top </a>
-    <a href="/new" class="navbar-item"> Last </a>
-    <a href="/post" class="navbar-item"> New topic </a>
+    <a href="/top" class="navbar-item"> Самое обсуждаемое </a>
+    <a href="/new" class="navbar-item"> Последние </a>
+    <a href="/post" class="navbar-item"> Создать топик </a>
 </div>
 
 <table class="table" style="width: 80%">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Last Activity</th>
-            <th>Author</th>
-            <th>Replies</th>
-            <th>Views</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Последняя активность</th>
+            <th>Автор</th>
+            <th>Ответы</th>
+            <th>Просмотры</th>
         </tr>
     </thead>
 	{% for topic in topics %}
